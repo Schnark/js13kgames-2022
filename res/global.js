@@ -1,0 +1,4 @@
+/*global GRID_SIZE: true, GRID_WIDTH: true, GRID_HEIGHT: true*/
+GRID_SIZE = 96;
+GRID_WIDTH = 10;
+GRID_HEIGHT = 15;
