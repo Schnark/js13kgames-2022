@@ -12,7 +12,7 @@ function initCanvas () {
 	var canvas = document.getElementById('canvas'), header = document.getElementById('header');
 	canvas.width = GRID_SIZE * GRID_WIDTH;
 	canvas.height = GRID_SIZE * GRID_HEIGHT;
-	ctx = canvas.getContext('2d');
+	ctx = canvas.getContext('2d', {alpha: false});
 
 	function onResize () {
 		var docEl = document.documentElement, f, width;

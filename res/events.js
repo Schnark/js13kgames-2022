@@ -3,7 +3,7 @@ events =
 (function () {
 "use strict";
 
-var connection, canvas, startX, startY;
+var connection, enableKeys = false, canvas, startX, startY;
 
 function getKey (e) {
 	if (e.key && e.key !== 'Unidentified') {
@@ -24,7 +24,7 @@ function getKey (e) {
 }
 
 function onKeydown (e) {
-	if (!connection) {
+	if (!connection || !enableKeys || e.altKey || e.ctrlKey || e.metaKey) {
 		return;
 	}
 	switch (getKey(e)) {
@@ -93,6 +93,12 @@ function onTouchend (e) {
 	e.preventDefault();
 }
 
+function onAbortClick () {
+	if (connection) {
+		connection.msg('abort');
+	}
+}
+
 function onSwitchClick () {
 	if (connection) {
 		connection.switchUser(1 - connection.getUser());
@@ -107,7 +113,13 @@ function onRestartClick () {
 
 function onLevelsClick (e) {
 	if (connection && !e.target.disabled && e.target.dataset.level) {
-		connection.msg('select', {level: e.target.dataset.level});
+		connection.msg('select', {level: Number(e.target.dataset.level)});
+	}
+}
+
+function onMonitizationstart () {
+	if (connection) {
+		connection.msg('unlock', {data: 'bonus'});
 	}
 }
 
@@ -116,16 +128,25 @@ canvas = document.getElementById('canvas');
 canvas.addEventListener('touchstart', onTouchstart, {passive: false});
 canvas.addEventListener('touchmove', onTouchmove, {passive: false});
 canvas.addEventListener('touchend', onTouchend);
+document.getElementById('abort').addEventListener('click', onAbortClick);
 document.getElementById('switch').addEventListener('click', onSwitchClick);
 document.getElementById('restart').addEventListener('click', onRestartClick);
 document.getElementById('levels').addEventListener('click', onLevelsClick);
-
+if (document.monetization) {
+	document.monetization.addEventListener('monetizationstart', onMonitizationstart);
+}
 return {
 	start: function (c) {
 		connection = c;
 	},
 	stop: function () {
 		connection = false;
+	},
+	startKeys: function () {
+		enableKeys = true;
+	},
+	stopKeys: function () {
+		enableKeys = false;
 	}
 };
 })();

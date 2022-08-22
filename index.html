@@ -11,6 +11,7 @@ delete line-->
 <script src="game-lib/client.js" defer></script>
 <script src="game-lib/iframe-connection.js" defer></script><!--replace SocketConnection with IframeConnection for local debugging-->
 <script src="res/global.js" defer></script>
+<script src="res/storage.js" defer></script>
 <script src="res/overlay.js" defer></script>
 <script src="res/events.js" defer></script>
 <script src="res/draw.js" defer></script>
@@ -18,6 +19,8 @@ delete line-->
 <script src="res/movable.js" defer></script>
 <script src="res/room.js" defer></script>
 <script src="res/level.js" defer></script>
+<script src="res/level-data.js" defer></script>
+<script src="res/level-manager.js" defer></script>
 <script src="res/game.js" defer></script>
 <!--delete to here-->
 <!--delete line
@@ -27,13 +30,10 @@ insert min.css
 delete line-->
 </head><body>
 <section id="levels" hidden>
-<p><button data-level="1">1</button>
-<button data-level="2" disabled>2</button>
-</p>
 </section>
-<section id="game">
-<header id="header"><button id="switch">↔</button> <button id="restart">R</button></header>
-<canvas id="canvas"></canvas>
+<section id="game" hidden>
+<header id="header"><button id="abort">X</button> <button id="switch"><span id="yellow">▪</span><span id="blue">●</span></button> <button id="restart">R</button></header>
+<canvas id="canvas" moz-opaque></canvas>
 </section>
 <div id="info">
 <p id="info-text"></p>

@@ -58,20 +58,20 @@ drawFunctions.death = function (ctx, time) {
 	ctx.beginPath();
 	ctx.moveTo(0, -GRID_SIZE / 12);
 	ctx.lineTo(GRID_SIZE / 3, -GRID_SIZE / 12);
-	ctx.bezierCurveTo(GRID_SIZE * 5 / 12, -GRID_SIZE / 12, GRID_SIZE * 5 / 12, -GRID_SIZE / 6, GRID_SIZE * 5 / 12, 0);
-	ctx.bezierCurveTo(GRID_SIZE * 5 / 12, GRID_SIZE / 6, GRID_SIZE * 5 / 12, GRID_SIZE / 12, GRID_SIZE / 3, GRID_SIZE / 12);
+	ctx.bezierCurveTo(GRID_SIZE / 3, -GRID_SIZE / 12, GRID_SIZE * 5 / 12, -GRID_SIZE / 4, GRID_SIZE * 5 / 12, 0);
+	ctx.bezierCurveTo(GRID_SIZE * 5 / 12, GRID_SIZE / 4, GRID_SIZE / 3, GRID_SIZE / 12, GRID_SIZE / 3, GRID_SIZE / 12);
 	ctx.lineTo(-GRID_SIZE / 3, GRID_SIZE / 12);
-	ctx.bezierCurveTo(-GRID_SIZE * 5 / 12, GRID_SIZE / 12, -GRID_SIZE * 5 / 12, GRID_SIZE / 6, -GRID_SIZE * 5 / 12, 0);
-	ctx.bezierCurveTo(-GRID_SIZE * 5 / 12, -GRID_SIZE / 6, -GRID_SIZE * 5 / 12, -GRID_SIZE / 12, -GRID_SIZE / 3, -GRID_SIZE / 12);
+	ctx.bezierCurveTo(-GRID_SIZE / 3, GRID_SIZE / 12, -GRID_SIZE * 5 / 12, GRID_SIZE / 4, -GRID_SIZE * 5 / 12, 0);
+	ctx.bezierCurveTo(-GRID_SIZE * 5 / 12, -GRID_SIZE / 4, -GRID_SIZE / 3, -GRID_SIZE / 12, -GRID_SIZE / 3, -GRID_SIZE / 12);
 	ctx.closePath();
 	ctx.fill();
 	ctx.stroke();
 	ctx.restore();
 	ctx.beginPath();
 	ctx.moveTo(0, -GRID_SIZE * 0.7);
-	ctx.bezierCurveTo(GRID_SIZE / 3, -GRID_SIZE * 0.7, GRID_SIZE * 5 / 12, -GRID_SIZE / 2, GRID_SIZE * 5 / 12, -GRID_SIZE * 0.3);
+	ctx.bezierCurveTo(GRID_SIZE / 3, -GRID_SIZE * 0.7, GRID_SIZE * 5 / 12, -GRID_SIZE / 2, GRID_SIZE * 5 / 12, -GRID_SIZE / 3);
 	ctx.bezierCurveTo(GRID_SIZE * 5 / 12, -GRID_SIZE * 0.1, GRID_SIZE / 24, GRID_SIZE * 0.2, 0, GRID_SIZE * 0.2);
-	ctx.bezierCurveTo(-GRID_SIZE / 24, GRID_SIZE * 0.2, -GRID_SIZE * 5 / 12, -GRID_SIZE * 0.1, -GRID_SIZE * 5 / 12, -GRID_SIZE * 0.3);
+	ctx.bezierCurveTo(-GRID_SIZE / 24, GRID_SIZE * 0.2, -GRID_SIZE * 5 / 12, -GRID_SIZE * 0.1, -GRID_SIZE * 5 / 12, -GRID_SIZE / 3);
 	ctx.bezierCurveTo(-GRID_SIZE * 5 / 12, -GRID_SIZE / 2, -GRID_SIZE / 3, -GRID_SIZE * 0.7, 0, -GRID_SIZE * 0.7);
 	ctx.fill();
 	ctx.stroke();
@@ -80,6 +80,11 @@ drawFunctions.death = function (ctx, time) {
 	ctx.arc(-GRID_SIZE / 5, -GRID_SIZE / 3, GRID_SIZE / 8, 0, 2 * Math.PI);
 	ctx.arc(GRID_SIZE / 5, -GRID_SIZE / 3, GRID_SIZE / 8, 0, 2 * Math.PI);
 	ctx.fill();
+};
+
+drawFunctions.box = function (ctx) {
+	ctx.fillStyle = '#732';
+	ctx.fillRect(0, 0, GRID_SIZE, GRID_SIZE);
 };
 
 function Movable (type, x, y) {
@@ -92,16 +97,35 @@ function Movable (type, x, y) {
 }
 
 Movable.prototype.setRoom = function (room) {
+	if (this.room === room) {
+		return;
+	}
+	if (this.room) {
+		this.room.movables.splice(this.room.movables.indexOf(this), 1);
+	}
 	this.room = room;
 };
 
-Movable.prototype.canMoveTo = function (x, y) {
-	return this.room && this.room.getType(x, y) === 'grass'; //TODO
+Movable.prototype.getTile = function () {
+	return this.room.getTile(this.x, this.y);
 };
 
-Movable.prototype.moveTo = function (x, y) {
-	this.drawX = this.x;
-	this.drawY = this.y;
+Movable.prototype.canMoveTo = function (x, y, dx, dy) {
+	if (!this.room.canEnter(x, y)) {
+		return false;
+	}
+	if (!this.room.isOccupied(x, y)) {
+		return true;
+	}
+	//the square we want to move to is not free
+	//this must be a box, all else would have ended the game
+	//test whether we can push the box
+	return this.room.canEnter(x + dx, y + dy) && !this.room.isOccupied(x + dx, y + dy);
+};
+
+Movable.prototype.moveTo = function (x, y, immediately) {
+	this.drawX = immediately ? x : this.x;
+	this.drawY = immediately ? y : this.y;
 	this.x = x;
 	this.y = y;
 };

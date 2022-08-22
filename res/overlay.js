@@ -23,6 +23,7 @@ function showModal (text, callback) {
 	modalText.textContent = text;
 	modalCallback = callback;
 	modal.style.display = 'block';
+	button.focus();
 }
 
 function hideModal () {
@@ -30,6 +31,10 @@ function hideModal () {
 }
 
 function showInfo (text, timeout) {
+	if (!text) {
+		hideInfo();
+		return;
+	}
 	infoText.textContent = text;
 	info.style.display = 'block';
 	if (infoTimeout) {

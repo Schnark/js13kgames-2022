@@ -2,11 +2,29 @@ html,
 body {
 	margin: 0;
 	padding: 0;
+	font-family: sans-serif;
+}
+
+section:not(#game) {
+	padding: 0.5em 1em;
 }
 
 header {
 	background: gray;
 	margin: auto;
+}
+
+.yellow #blue,
+.blue #yellow {
+	display: none;
+}
+
+#blue {
+	color: #00f;
+}
+
+#yellow {
+	color: #ff0;
 }
 
 #canvas {
@@ -31,7 +49,8 @@ header {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	background-color: rgba(255, 255, 255, 0.8);
+	background-color: rgba(255, 255, 255, 0.7);
 	text-align: center;
 	font-size: 500%;
+	overflow: auto;
 }

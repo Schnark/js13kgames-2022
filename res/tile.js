@@ -5,32 +5,140 @@ Tile =
 "use strict";
 
 var animationDurations = {
-		grass: 5 * 1000
+		fire: 10 * 1000,
+		teleport: 15 * 1000
 	},
 	drawFunctions = {},
-	stateSpeed = 1 / 1000; //TODO
+	stateSpeed = 1 / 1000;
 
-drawFunctions.grass = function (ctx, time) {
-	//var i, j;
+drawFunctions.grass = function (ctx) {
 	ctx.fillStyle = '#060';
 	ctx.fillRect(0, 0, GRID_SIZE, GRID_SIZE);
-	/*ctx.strokeStyle = '#040';
-	ctx.beginPath();
-	for (i = 0; i < 3; i++) {
-		for (j = 0; j < 3; j++) {
-			ctx.moveTo((i + 1) / 4 * GRID_SIZE, (j + 1) / 4 * GRID_SIZE);
-			ctx.lineTo((i + 1 + Math.sin(time * Math.PI / 50) / 3) / 4 * GRID_SIZE, (j + 0.5) / 4 * GRID_SIZE);
-		}
-	}
-	ctx.stroke();*/
 };
 
-function Tile (type, state) {
+drawFunctions.block = function (ctx) {
+	ctx.fillStyle = '#000';
+	ctx.fillRect(0, 0, GRID_SIZE, GRID_SIZE);
+	//ctx.lineWidth = 2;
+	ctx.strokeStyle = '#fff';
+	ctx.beginPath();
+	ctx.moveTo(0, 0);
+	ctx.lineTo(GRID_SIZE, 0);
+	ctx.moveTo(0, GRID_SIZE / 4);
+	ctx.lineTo(GRID_SIZE, GRID_SIZE / 4);
+	ctx.moveTo(0, GRID_SIZE / 2);
+	ctx.lineTo(GRID_SIZE, GRID_SIZE / 2);
+	ctx.moveTo(0, 3 * GRID_SIZE / 4);
+	ctx.lineTo(GRID_SIZE, 3 * GRID_SIZE / 4);
+	ctx.moveTo(0, 0);
+	ctx.lineTo(0, GRID_SIZE / 4);
+	ctx.moveTo(GRID_SIZE / 2, 0);
+	ctx.lineTo(GRID_SIZE / 2, GRID_SIZE / 4);
+	ctx.moveTo(0, GRID_SIZE / 2);
+	ctx.lineTo(0, 3 * GRID_SIZE / 4);
+	ctx.moveTo(GRID_SIZE / 2, GRID_SIZE / 2);
+	ctx.lineTo(GRID_SIZE / 2, 3 * GRID_SIZE / 4);
+	ctx.moveTo(GRID_SIZE / 4, GRID_SIZE / 4);
+	ctx.lineTo(GRID_SIZE / 4, GRID_SIZE / 2);
+	ctx.moveTo(3 * GRID_SIZE / 4, GRID_SIZE / 4);
+	ctx.lineTo(3 * GRID_SIZE / 4, GRID_SIZE / 2);
+	ctx.moveTo(GRID_SIZE / 4, 3 * GRID_SIZE / 4);
+	ctx.lineTo(GRID_SIZE / 4, GRID_SIZE);
+	ctx.moveTo(3 * GRID_SIZE / 4, 3 * GRID_SIZE / 4);
+	ctx.lineTo(3 * GRID_SIZE / 4, GRID_SIZE);
+	ctx.stroke();
+};
+
+drawFunctions.fire = function (ctx, time) {
+	ctx.fillStyle = 'hsl(0,100%,' + (50 + 10 * Math.sin(time * Math.PI / 50)) + '%)';
+	ctx.fillRect(0, 0, GRID_SIZE, GRID_SIZE);
+};
+
+drawFunctions.doc = function (ctx) {
+	drawFunctions.grass(ctx);
+	ctx.fillStyle = '#fff';
+	ctx.strokeStyle = '#000';
+	ctx.lineWidth = 1.5;
+	ctx.beginPath();
+	ctx.moveTo(2 * GRID_SIZE / 3, 5 * GRID_SIZE / 12);
+	ctx.lineTo(GRID_SIZE / 2, GRID_SIZE / 4);
+	ctx.lineTo(GRID_SIZE / 3, GRID_SIZE / 4);
+	ctx.lineTo(GRID_SIZE / 3, 3 * GRID_SIZE / 4);
+	ctx.lineTo(2 * GRID_SIZE / 3, 3 * GRID_SIZE / 4);
+	ctx.lineTo(2 * GRID_SIZE / 3, 5 * GRID_SIZE / 12);
+	ctx.fill();
+	ctx.lineTo(GRID_SIZE / 2, 5 * GRID_SIZE / 12);
+	ctx.lineTo(GRID_SIZE / 2, GRID_SIZE / 4);
+	ctx.stroke();
+};
+
+drawFunctions.hdoor = function (ctx, time, state) {
+	var l = GRID_SIZE / 2 - state * (GRID_SIZE / 2 - GRID_SIZE / 48);
+	drawFunctions.grass(ctx);
+	ctx.fillStyle = '#aaa';
+	ctx.rect(0, 0, l, GRID_SIZE / 8);
+	ctx.rect(0, 7 * GRID_SIZE / 8, l, GRID_SIZE / 8);
+	ctx.rect(GRID_SIZE - l, 0, l, GRID_SIZE / 8);
+	ctx.rect(GRID_SIZE - l, 7 * GRID_SIZE / 8, l, GRID_SIZE / 8);
+	ctx.fill();
+};
+
+drawFunctions.vdoor = function (ctx, time, state) {
+	var l = GRID_SIZE / 2 - state * (GRID_SIZE / 2 - GRID_SIZE / 48);
+	drawFunctions.grass(ctx);
+	ctx.fillStyle = '#aaa';
+	ctx.rect(0, 0, GRID_SIZE / 8, l);
+	ctx.rect(7 * GRID_SIZE / 8, 0, GRID_SIZE / 8, l);
+	ctx.rect(0, GRID_SIZE - l, GRID_SIZE / 8, l);
+	ctx.rect(7 * GRID_SIZE / 8, GRID_SIZE - l, GRID_SIZE / 8, l);
+	ctx.fill();
+};
+
+drawFunctions.trigger = function (ctx) {
+	drawFunctions.grass(ctx);
+	ctx.fillStyle = '#aaa';
+	ctx.fillRect(GRID_SIZE / 4, GRID_SIZE / 4, GRID_SIZE / 2, GRID_SIZE / 2);
+};
+
+drawFunctions.teleport = function (ctx, time) {
+	drawFunctions.grass(ctx);
+	ctx.fillStyle = '#a0a';
+	ctx.beginPath();
+	ctx.arc(GRID_SIZE / 2, GRID_SIZE / 2, GRID_SIZE / 4 + GRID_SIZE / 12 * Math.sin(time * Math.PI / 50), 0, 2 * Math.PI);
+	ctx.fill();
+};
+
+function Tile (type, dataOrState) {
 	this.type = type;
-	this.state = state || 0;
+	if (dataOrState === 0 || dataOrState === 1) {
+		this.state = dataOrState;
+	} else {
+		this.data = dataOrState;
+		this.state = 0;
+	}
 	this.drawState = this.state;
 	this.animationTime = 0;
 }
+
+Tile.prototype.canEnter = function () {
+	if (this.type === 'vdoor' || this.type === 'hdoor') {
+		return this.state === 1;
+	}
+	return this.type !== 'block';
+};
+
+Tile.prototype.getDeath = function () {
+	if (this.type === 'fire') {
+		return 1;
+	}
+	if ((this.type === 'vdoor' || this.type === 'hdoor') && this.state === 0) {
+		return 2;
+	}
+	if (this.type === 'teleport') { //if we didn't move away immediately, this is deadly
+		return 3;
+	}
+	return 0;
+};
 
 Tile.prototype.draw = function (ctx, x, y, dt) {
 	var animationDuration = animationDurations[this.type] || 1;

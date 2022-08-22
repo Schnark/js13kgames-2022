@@ -1,5 +1,5 @@
-JS = game-lib/client.js res/global.js res/overlay.js res/events.js res/draw.js res/tile.js res/movable.js res/room.js res/level.js res/game.js
-GLOBAL = SocketConnection, LocalConnection, GRID_SIZE, GRID_WIDTH, GRID_HEIGHT, overlay, events, draw, Tile, Movable, Room, Level
+JS = game-lib/client.js res/global.js res/storage.js res/overlay.js res/events.js res/draw.js res/tile.js res/movable.js res/room.js res/level.js res/level-data.js res/level-manager.js res/game.js
+GLOBAL = SocketConnection, LocalConnection, GRID_SIZE, GRID_WIDTH, GRID_HEIGHT, storage, overlay, events, draw, Tile, Movable, Room, Level, levelData, levelManager
 
 .PHONY: check
 check: dist.zip
