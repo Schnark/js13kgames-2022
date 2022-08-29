@@ -16,7 +16,12 @@ function initCanvas () {
 
 	function onResize () {
 		var docEl = document.documentElement, f, width;
-		f = Math.min(1, docEl.clientWidth / canvas.width, (docEl.clientHeight - header.clientHeight) / canvas.height);
+		f = Math.min(
+			1,
+			docEl.clientWidth / canvas.width,
+			//TODO header.clientHeight is 0 when hidden, but we actually know it always is 42
+			(docEl.clientHeight - (header.clientHeight || 42)) / canvas.height
+		);
 		if (f > 0.75) {
 			f = 0.75;
 		} else if (f > 2 / 3) {
@@ -35,6 +40,86 @@ function initCanvas () {
 
 	window.addEventListener('resize', onResize);
 	onResize();
+}
+
+function createPatterns () {
+	var patternCanvas = document.createElement('canvas'),
+		patternCtx = patternCanvas.getContext('2d'),
+		imageData, i, gray, x, y, d,
+		box, grass, fire, teleport;
+	patternCanvas.width = 32;
+	patternCanvas.height = 32;
+
+	for (i = 0; i < 32; i += 3) {
+		gray = Math.floor(Math.random() * 256);
+		patternCtx.strokeStyle = 'rgba(' + gray + ',' + gray + ',' + gray + ',0.3)';
+		x = 5 * Math.random();
+		y = 6 + 4 * Math.random();
+		patternCtx.beginPath();
+		patternCtx.moveTo(i, 0);
+		patternCtx.bezierCurveTo(i + x, y, i - x, 32 - y, i, 32);
+		patternCtx.stroke();
+	}
+	box = ctx.createPattern(patternCanvas, 'repeat');
+
+	imageData = patternCtx.createImageData(32, 32);
+	for (i = 0; i < 4 * 32 * 32; i += 4) {
+		gray = Math.floor(Math.random() * 256);
+		imageData.data[i] = gray;
+		imageData.data[i + 1] = gray;
+		imageData.data[i + 2] = gray;
+		imageData.data[i + 3] = 50;
+	}
+	patternCtx.putImageData(imageData, 0, 0);
+	grass = ctx.createPattern(patternCanvas, 'repeat');
+
+	d = 32;
+	imageData.data[2] = 0;
+	imageData.data[3] = 128 + Math.floor(Math.random() * 32);
+	imageData.data[4 * 31 + 2] = 0;
+	imageData.data[4 * 31 + 3] = 128 + Math.floor(Math.random() * 32);
+	imageData.data[4 * 32 * 31 + 2] = 0;
+	imageData.data[4 * 32 * 31 + 3] = 128 + Math.floor(Math.random() * 32);
+	imageData.data[4 * (32 * 31 + 31) + 2] = 0;
+	imageData.data[4 * (32 * 31 + 31) + 3] = 128 + Math.floor(Math.random() * 32);
+	while (d > 1) {
+		d /= 2;
+		for (x = d; x < 32 - d; x += d) {
+			for (y = 0; y < 32; y += 2 * d) {
+				gray = imageData.data[(y * 32 + x - d) * 4] + imageData.data[(y * 32 + x + d) * 4];
+				gray = Math.floor(gray / 2 + (Math.random() - 0.5) * 8 * d);
+				i = (y * 32 + x) * 4;
+				imageData.data[i] = gray;
+				imageData.data[i + 1] = gray;
+				imageData.data[i + 2] = 0;
+				imageData.data[i + 3] = 128 + Math.floor(Math.random() * 32);
+			}
+		}
+		for (y = d; y < 32 - d; y += d) {
+			for (x = 0; x < 32; x += 2 * d) {
+				gray = imageData.data[((y - d) * 32 + x) * 4] + imageData.data[((y + d) * 32 + x) * 4];
+				gray = Math.floor(gray / 2 + (Math.random() - 0.5) * 8 * d);
+				i = (y * 32 + x) * 4;
+				imageData.data[i] = gray;
+				imageData.data[i + 1] = gray;
+				imageData.data[i + 2] = 0;
+				imageData.data[i + 3] = 128 + Math.floor(Math.random() * 32);
+			}
+		}
+	}
+	patternCtx.putImageData(imageData, 0, 0);
+	fire = ctx.createPattern(patternCanvas, 'repeat');
+
+	teleport = ctx.createRadialGradient(GRID_SIZE / 2, GRID_SIZE / 2, 0, GRID_SIZE / 2, GRID_SIZE / 2, GRID_SIZE / 2);
+	teleport.addColorStop(0, '#808');
+	teleport.addColorStop(1, '#d0d');
+
+	return {
+		box: box,
+		grass: grass,
+		fire: fire,
+		teleport: teleport
+	};
 }
 
 function rAFCallback (time) {
@@ -62,6 +147,7 @@ return {
 			drawCallback(ctx);
 		}
 		drawCallback = false;
-	}
+	},
+	patterns: createPatterns()
 };
 })();

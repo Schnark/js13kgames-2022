@@ -3,26 +3,20 @@
 "use strict";
 
 var connection,
+	startPage = document.getElementById('start'),
+	codePage = document.getElementById('code'),
+	waitPage = document.getElementById('wait'),
+
 	switchButton = document.getElementById('switch'),
-	solvedLevels = storage.get('solved', {}),
+	solvedLevels = storage.get('solved'),
 	results = [
-		'You win!',
 		'Yellow died!', 'Blue died!',
 		'Yellow burnt!', 'Blue burnt!',
 		'Yellow was crushed in a closing door!', 'Blue was crushed in a closing door!',
 		'Yellow got stuck in a teleporter!', 'Blue got stuck in a teleporter!'
 	];
 
-function pad (n) {
-	return n < 10 ? '0' + n : n;
-}
-
-function formatTime (s) {
-	return Math.floor(s / 60) + ':' + pad(s % 60);
-}
-
 function supportsMonetization () {
-	//TODO add tag
 	return location.search === '?monetization-cheater' ||
 		(document.monetization && document.monetization.state === 'started');
 }
@@ -32,14 +26,16 @@ function solvedLevelCount () {
 }
 
 function onConnection (type, user, details) {
-	var level = levelManager.getCurrentLevel(), end, id, time, formattedTime, msg;
+	var level = levelManager.getCurrentLevel(), end, id, time, msg;
 	switch (type) {
 	case 'start':
+		startPage.hidden = true;
+		waitPage.hidden = true;
 		switchButton.className = ['yellow', 'blue'][user];
 		events.start(connection);
 		levelManager.init();
 		Object.keys(solvedLevels).forEach(function (id) {
-			levelManager.markSolved(id, formatTime(solvedLevels[id]));
+			levelManager.markSolved(id, solvedLevels[id]);
 		});
 		connection.msg('unlock', {data: solvedLevelCount()});
 		if (supportsMonetization()) {
@@ -52,7 +48,8 @@ function onConnection (type, user, details) {
 			if (level) {
 				levelManager.abortLevel();
 			}
-			//TODO hide level selection
+			levelManager.end();
+			startPage.hidden = false;
 		} else {
 			overlay.modal('The other user quit. You can continue to play alone.', function () {});
 			connection = new LocalConnection(onConnection, connection.getUser());
@@ -71,15 +68,15 @@ function onConnection (type, user, details) {
 			end = level.getState();
 			if (end) {
 				time = level.stop();
-				msg = results[end - 1];
+				msg = results[end - 2];
 				if (end === 1) {
 					id = levelManager.getCurrentLevelId();
-					formattedTime = formatTime(time);
-					msg += ' (' + formattedTime + ')';
+					msg = 'Level solved again!';
 					if (!solvedLevels[id] || solvedLevels[id] > time) {
+						msg = solvedLevels[id] ? 'Level solved faster than before!' : 'Level solved!';
 						solvedLevels[id] = time;
 						storage.set('solved', solvedLevels);
-						levelManager.markSolved(id, formattedTime);
+						levelManager.markSolved(id, time);
 						connection.msg('unlock', {data: solvedLevelCount()});
 					}
 				}
@@ -133,9 +130,46 @@ function onConnection (type, user, details) {
 }
 
 function init () {
+	var friendButton, randomButton;
+
+	document.getElementById('alone').addEventListener('click', function () {
+		connection = new LocalConnection(onConnection);
+	});
+
+	friendButton = document.getElementById('friend');
+	randomButton = document.getElementById('random');
 	if (SocketConnection.isAvailable()) {
-		connection = new SocketConnection(onConnection);
+		friendButton.addEventListener('click', function () {
+			startPage.hidden = true;
+			codePage.hidden = false;
+		});
+		randomButton.addEventListener('click', function () {
+			startPage.hidden = true;
+			waitPage.hidden = false;
+			connection = new SocketConnection(onConnection);
+		});
 	} else {
+		friendButton.disabled = true;
+		randomButton.disabled = true;
+	}
+
+	document.getElementById('connect').addEventListener('click', function () {
+		codePage.hidden = true;
+		waitPage.hidden = false;
+		connection = new SocketConnection(onConnection, document.getElementById('input').value);
+	});
+	document.getElementById('back').addEventListener('click', function () {
+		codePage.hidden = true;
+		startPage.hidden = false;
+	});
+	document.getElementById('cancel').addEventListener('click', function () {
+		connection.close();
+		waitPage.hidden = true;
+		startPage.hidden = false;
+	});
+
+	//TODO
+	if (!SocketConnection.isAvailable()) {
 		connection = new LocalConnection(onConnection);
 	}
 }

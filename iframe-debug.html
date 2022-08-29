@@ -5,9 +5,13 @@
 <script src="game-lib/iframe-connection.js"></script>
 <script>
 initServer();
+
+function unload (i) {
+	document.getElementsByTagName('iframe')[i].src = 'about:blank';
+}
 </script>
 <style>
-td {
+td.iframe {
 	width: 50%;
 	height: 100%;
 }
@@ -22,6 +26,8 @@ iframe {
 </style>
 </head><body>
 <table><tr>
-<td><iframe src="index.html"></iframe></td><td><iframe src="index.html"></iframe></td>
+<td><button onclick="unload(0)">X</button></td><td><button onclick="unload(1)">X</button></td>
+</tr><tr>
+<td class="iframe"><iframe src="index.html"></iframe></td><td class="ifram"><iframe src="index.html"></iframe></td>
 </tr></table>
 </body></html>

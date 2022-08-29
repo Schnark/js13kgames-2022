@@ -101,7 +101,7 @@ Level.prototype.enterLeave = function (player, enterLeave) {
 	var tile = player.getTile();
 	if (tile.type === 'doc') {
 		if (player === [this.yellow, this.blue][this.user]) {
-			overlay.info(enterLeave ? tile.data : '');
+			overlay.info(enterLeave ? tile.data : '', 5);
 		}
 	} else if (tile.type === 'trigger') {
 		tile = tile.data;

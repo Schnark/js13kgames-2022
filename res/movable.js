@@ -1,5 +1,5 @@
 /*global Movable: true*/
-/*global GRID_SIZE*/
+/*global GRID_SIZE, draw*/
 Movable =
 (function () {
 "use strict";
@@ -10,9 +10,9 @@ var animationDurations = {
 		death: 50 * 1000
 	},
 	drawFunctions = {},
-	speed = 1 / 200; //TODO
+	speed = 1 / 200;
 
-function drawEye (ctx, x, y, r) {
+function drawEye (ctx, x, y, r, d) {
 	ctx.fillStyle = '#fff';
 	ctx.strokeStyle = '#000';
 	ctx.beginPath();
@@ -21,37 +21,56 @@ function drawEye (ctx, x, y, r) {
 	ctx.stroke();
 	ctx.fillStyle = '#000';
 	ctx.beginPath();
-	ctx.arc(x, y - r / 3, r / 3, 0, 2 * Math.PI);
+	ctx.arc(x, y - r / 3 + d, r / 3, 0, 2 * Math.PI);
 	ctx.fill();
 }
 
 drawFunctions.yellow = function (ctx, time) {
+	var d = 0;
 	ctx.translate(GRID_SIZE / 2, GRID_SIZE / 2);
 	if (time > 50 && time < 55) {
 		ctx.rotate(0.2 * Math.sin((time - 50) * Math.PI / 2.5));
 	}
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = '#cc0';
 	ctx.fillStyle = '#ff0';
-	ctx.fillRect(-2 * GRID_SIZE / 5, -2 * GRID_SIZE / 5, GRID_SIZE * 4 / 5, GRID_SIZE * 4 / 5);
-	drawEye(ctx, -GRID_SIZE / 5, -GRID_SIZE / 10, GRID_SIZE / 10);
-	drawEye(ctx, GRID_SIZE / 5, -GRID_SIZE / 10, GRID_SIZE / 10);
+	ctx.beginPath();
+	ctx.rect(-19 * GRID_SIZE / 48, -19 * GRID_SIZE / 48, 19 * GRID_SIZE / 24, 19 * GRID_SIZE / 24);
+	ctx.fill();
+	ctx.stroke();
+	ctx.lineWidth = 1.5;
+	if (time > 70 && time < 75) {
+		d = 2 - Math.max(0, Math.abs(time - 72.5) - 0.5);
+	}
+	drawEye(ctx, -GRID_SIZE / 5, -GRID_SIZE / 10, GRID_SIZE / 10, d);
+	drawEye(ctx, GRID_SIZE / 5, -GRID_SIZE / 10, GRID_SIZE / 10, d);
 };
 
 drawFunctions.blue = function (ctx, time) {
+	var d = 0;
 	ctx.translate(GRID_SIZE / 2, GRID_SIZE / 2);
 	if (time > 60 && time < 70) {
 		ctx.rotate(Math.sin((time - 60) * Math.PI / 5));
 	}
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = '#36d';
 	ctx.fillStyle = '#58f';
 	ctx.beginPath();
 	ctx.arc(0, 0, GRID_SIZE * 2 / 5, 0, 2 * Math.PI);
 	ctx.fill();
-	drawEye(ctx, -GRID_SIZE / 5, -GRID_SIZE / 10, GRID_SIZE / 10);
-	drawEye(ctx, GRID_SIZE / 5, -GRID_SIZE / 10, GRID_SIZE / 10);
+	ctx.stroke();
+	ctx.lineWidth = 1.5;
+	if (time > 20 && time < 25) {
+		d = 2 - Math.max(0, Math.abs(time - 22.5) - 0.5);
+	}
+	drawEye(ctx, -GRID_SIZE / 5, -GRID_SIZE / 10, GRID_SIZE / 10, d);
+	drawEye(ctx, GRID_SIZE / 5, -GRID_SIZE / 10, GRID_SIZE / 10, d);
 };
 
 drawFunctions.death = function (ctx, time) {
-	ctx.fillStyle = '#fff';
-	ctx.strokeStyle = '#ccc';
+	var deg;
+	ctx.fillStyle = '#ffe';
+	ctx.strokeStyle = '#aaa';
 	ctx.translate(GRID_SIZE / 2, GRID_SIZE * 0.75);
 	ctx.save();
 	ctx.rotate(Math.sin(time * Math.PI / 500) * Math.sin(time * Math.PI / 5) / 2);
@@ -68,14 +87,20 @@ drawFunctions.death = function (ctx, time) {
 	ctx.stroke();
 	ctx.restore();
 	ctx.beginPath();
-	ctx.moveTo(0, -GRID_SIZE * 0.7);
-	ctx.bezierCurveTo(GRID_SIZE / 3, -GRID_SIZE * 0.7, GRID_SIZE * 5 / 12, -GRID_SIZE / 2, GRID_SIZE * 5 / 12, -GRID_SIZE / 3);
-	ctx.bezierCurveTo(GRID_SIZE * 5 / 12, -GRID_SIZE * 0.1, GRID_SIZE / 24, GRID_SIZE * 0.2, 0, GRID_SIZE * 0.2);
-	ctx.bezierCurveTo(-GRID_SIZE / 24, GRID_SIZE * 0.2, -GRID_SIZE * 5 / 12, -GRID_SIZE * 0.1, -GRID_SIZE * 5 / 12, -GRID_SIZE / 3);
-	ctx.bezierCurveTo(-GRID_SIZE * 5 / 12, -GRID_SIZE / 2, -GRID_SIZE / 3, -GRID_SIZE * 0.7, 0, -GRID_SIZE * 0.7);
+	ctx.moveTo(0, -67 * GRID_SIZE / 96);
+	ctx.bezierCurveTo(GRID_SIZE / 3, -67 * GRID_SIZE / 96, GRID_SIZE * 5 / 12, -GRID_SIZE / 2,
+		GRID_SIZE * 5 / 12, -GRID_SIZE / 3);
+	ctx.bezierCurveTo(GRID_SIZE * 5 / 12, -5 * GRID_SIZE / 48, GRID_SIZE / 24, 19 * GRID_SIZE / 96, 0, 19 * GRID_SIZE / 96);
+	ctx.bezierCurveTo(-GRID_SIZE / 24, 19 * GRID_SIZE / 96, -GRID_SIZE * 5 / 12, -5 * GRID_SIZE / 48,
+		-GRID_SIZE * 5 / 12, -GRID_SIZE / 3);
+	ctx.bezierCurveTo(-GRID_SIZE * 5 / 12, -GRID_SIZE / 2, -GRID_SIZE / 3, -67 * GRID_SIZE / 96, 0, -67 * GRID_SIZE / 96);
 	ctx.fill();
 	ctx.stroke();
-	ctx.fillStyle = '#900';
+	deg = 0;
+	if (time > 70 && time < 75) {
+		deg = Math.max(0, Math.abs(time - 72.5) - 0.5) * 60 + 240;
+	}
+	ctx.fillStyle = 'hsl(' + deg + ', 100%, 30%)';
 	ctx.beginPath();
 	ctx.arc(-GRID_SIZE / 5, -GRID_SIZE / 3, GRID_SIZE / 8, 0, 2 * Math.PI);
 	ctx.arc(GRID_SIZE / 5, -GRID_SIZE / 3, GRID_SIZE / 8, 0, 2 * Math.PI);
@@ -84,6 +109,14 @@ drawFunctions.death = function (ctx, time) {
 
 drawFunctions.box = function (ctx) {
 	ctx.fillStyle = '#732';
+	ctx.fillRect(0, 0, GRID_SIZE, GRID_SIZE);
+	ctx.fillStyle = '#954';
+	ctx.fillRect(0, 0, GRID_SIZE, GRID_SIZE / 16);
+	ctx.fillRect(0, 0, GRID_SIZE / 16, GRID_SIZE);
+	ctx.fillStyle = '#510';
+	ctx.fillRect(15 * GRID_SIZE / 16, 0, GRID_SIZE / 16, GRID_SIZE);
+	ctx.fillRect(0, 15 * GRID_SIZE / 16, GRID_SIZE, GRID_SIZE / 16);
+	ctx.fillStyle = draw.patterns.box;
 	ctx.fillRect(0, 0, GRID_SIZE, GRID_SIZE);
 };
 

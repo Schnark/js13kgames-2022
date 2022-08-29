@@ -8,6 +8,14 @@ var levelSection = document.getElementById('levels'),
 	gameSection = document.getElementById('game'),
 	level, levelId, solvedLevels, bonusLevels, levels;
 
+function pad (n) {
+	return n < 10 ? '0' + n : n;
+}
+
+function formatTime (s) {
+	return Math.floor(s / 60) + ':' + pad(s % 60);
+}
+
 function showLevelselect () {
 	levelSection.hidden = false;
 	gameSection.hidden = true;
@@ -27,7 +35,7 @@ function generateHtml () {
 		html.push('<p>');
 		for (j = 0; j < levelData[i].levels.length; j++) {
 			level = levelData[i].levels[j];
-			button = (levels.length + 1) + ' <span class="result"></span>';
+			button = (levels.length + 1) + '<br><span class="result">&nbsp;</span>';
 			html.push('<button data-level="' + levels.length + '" disabled>' + button + '</button> ');
 			levels.push({
 				lock: levelData[i].lock,
@@ -84,7 +92,8 @@ function unlock (data) {
 }
 
 function markSolved (id, time) {
-	document.querySelector('[data-level="' + id + '"] .result').textContent = '✓ (' + time + ')';
+	document.querySelector('[data-level="' + id + '"]').className = 'solved';
+	document.querySelector('[data-level="' + id + '"] .result').textContent = formatTime(time);
 }
 
 function getNextLevelId (id) {
@@ -118,6 +127,9 @@ function abortLevel () {
 
 return {
 	init: init,
+	end: function () {
+		levelSection.hidden = true;
+	},
 	getCurrentLevel: function () {
 		return level;
 	},
