@@ -11,8 +11,8 @@ var modal = document.getElementById('modal'),
 	modalCallback, infoTimeout;
 
 button.addEventListener('click', function () {
-	hideModal();
 	modalCallback();
+	hideModal();
 });
 
 info.addEventListener('click', function () {
@@ -20,6 +20,9 @@ info.addEventListener('click', function () {
 });
 
 function showModal (text, callback) {
+	if (modalCallback) {
+		modalCallback();
+	}
 	modalText.textContent = text;
 	modalCallback = callback;
 	modal.style.display = 'block';
@@ -28,6 +31,7 @@ function showModal (text, callback) {
 
 function hideModal () {
 	modal.style.display = '';
+	modalCallback = false;
 }
 
 function showInfo (text, timeout) {

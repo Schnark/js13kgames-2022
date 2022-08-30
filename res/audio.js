@@ -3,7 +3,7 @@ audio =
 (function () {
 "use strict";
 
-var isPlaying = false, AC, audioContext, nodes = [], staffs;
+var audioMode = 2, isPlaying = false, AC, audioContext, nodes = [], staffs;
 
 function getFreq (note, key) {
 	return key[note];
@@ -67,7 +67,7 @@ function playStaff (staff) {
 
 function playStaffs () {
 	var i, time;
-	if (!isPlaying) {
+	if (!isPlaying || audioMode !== 2) {
 		return;
 	}
 	if (!audioContext) {
@@ -211,27 +211,18 @@ function generateSound (freq, incr, delay, times, vol, type) {
 }
 
 function playSound (sound) {
+	if (audioMode === 0) {
+		return;
+	}
 	switch (sound) {
 	case 'move':
 		generateSound(100, -10, 15, 15, 0.7, 2);
 		break;
-	case 'win':
-		generateSound(510, 0, 15, 20, 0.1);
-		setTimeout(function () {
-			generateSound(2600, 1, 10, 50, 0.2);
-		}, 80);
-		break;
 	case 'open':
-		generateSound(220, 15, 15, 15, 0.3, 2);
+		generateSound(220, 15, 60, 15, 0.3, 2);
 		break;
 	case 'close':
-		generateSound(440, -15, 15, 15, 0.3, 2);
-		break;
-	case 'switch':
-		generateSound(750, -30, 5, 20, 0.25);
-		setTimeout(function () {
-			generateSound(150, 30, 5, 20, 0.25);
-		}, 100);
+		generateSound(440, -15, 60, 15, 0.3, 2);
 		break;
 	case 'teleport':
 		generateSound(150, 30, 2, 20, 0.5, 2);
@@ -239,40 +230,24 @@ function playSound (sound) {
 			generateSound(150, 30, 2, 20, 0.5, 2);
 		}, 150);
 		break;
+	case 'switch':
+		generateSound(750, -30, 5, 20, 0.25);
+		setTimeout(function () {
+			generateSound(150, 30, 5, 20, 0.25);
+		}, 100);
+		break;
+	case 'win':
+		generateSound(510, 0, 15, 20, 0.1);
+		setTimeout(function () {
+			generateSound(2600, 1, 10, 50, 0.2);
+		}, 80);
+		break;
 	case 'die':
 	case 'restart':
 		generateSound(100, -10, 10, 25, 0.5);
 		generateSound(125, -5, 20, 45, 0.1, 1);
 		generateSound(40, 2, 20, 20, 1, 2);
 		generateSound(200, -4, 10, 100, 0.25, 2);
-		break;
-
-	case 'turn':
-		generateSound(260, -60, 15, 15, 0.4, 2);
-		break;
-	case 'drop-final':
-		generateSound(510, 0, 15, 20, 0.05);
-		break;
-	case 'error':
-		generateSound(440, -15, 15, 15, 0.5);
-		setTimeout(function () {
-			generateSound(100, -10, 10, 25, 0.5);
-		}, 300);
-		break;
-	case 'start':
-		generateSound(200, -30, 5, 10, 0.5, 2);
-		break;
-	case 'wall':
-		generateSound(100, -30, 15, 10, 0.5, 2);
-		break;
-	case 'ball':
-		generateSound(150, 30, 15, 20, 0.5, 2);
-		break;
-	case 'back':
-		generateSound(800, -40, 30, 15, 0.5, 2);
-		break;
-	case 'random':
-		generateSound(500, -200, 10, 10, 0.25, 1);
 	}
 }
 
@@ -280,6 +255,16 @@ AC = window.AudioContext || window.webkitAudioContext;
 setMelody();
 
 return {
+	setMode: function (mode) {
+		if (mode === audioMode) {
+			return;
+		}
+		if (audioMode === 2 && isPlaying) {
+			stop();
+			isPlaying = true; //technically, we are still playing, just muted
+		}
+		audioMode = mode;
+	},
 	start: function () {
 		isPlaying = true;
 	},

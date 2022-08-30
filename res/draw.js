@@ -1,5 +1,5 @@
 /*global draw: true*/
-/*global GRID_SIZE, GRID_WIDTH, GRID_HEIGHT*/
+/*global GRID_SIZE, GRID_WIDTH, GRID_HEIGHT, audio*/
 draw =
 (function () {
 "use strict";
@@ -129,6 +129,7 @@ function rAFCallback (time) {
 	if (!lastDraw) {
 		lastDraw = time;
 	}
+	audio.tick();
 	drawCallback(ctx, time - lastDraw);
 	lastDraw = time;
 	rAF(rAFCallback);
@@ -138,11 +139,13 @@ initCanvas();
 
 return {
 	start: function (c) {
+		audio.start();
 		lastDraw = 0;
 		drawCallback = c;
 		rAF(rAFCallback);
 	},
 	stop: function () {
+		audio.stop();
 		if (drawCallback) {
 			drawCallback(ctx);
 		}

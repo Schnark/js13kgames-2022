@@ -39,6 +39,15 @@ header button {
 	display: none;
 }
 
+.a0 #a1,
+.a0 #a2,
+.a1 #a0,
+.a1 #a2,
+.a2 #a0,
+.a2 #a1 {
+	display: none;
+}
+
 #game {
 	background: linear-gradient(90deg, #aac, #dd9);
 	height: 100%;
@@ -63,18 +72,15 @@ header button {
 	border: solid thin;
 	font: inherit;
 	padding: 1em;
-	width: 15em;
+	width: 16em;
+	max-width: 100%;
 	transition: width 0.2s;
 	cursor: pointer;
 }
 
-#start button:hover:not(:disabled) {
+#start button:hover {
 	transition: width 0.5s;
 	width: 20em;
-}
-
-#start button:disabled {
-	color: #888;
 }
 
 #levels button {
@@ -86,6 +92,7 @@ header button {
 	font-weight: bold;
 	width: 3em;
 	height: 3em;
+	margin: 0.5em;
 	cursor: pointer;
 }
 
@@ -94,7 +101,7 @@ header button {
 	font-size: 67%;
 }
 
-#levels button:hover:not(:disabled) {
+#levels button:enabled:hover {
 	border-color: #00f;
 }
 
@@ -107,6 +114,10 @@ header button {
 	background: #060;
 	border-color: #060;
 	color: #fff;
+}
+
+#levels button.solved:disabled {
+	border-color: #888;
 }
 
 #info {

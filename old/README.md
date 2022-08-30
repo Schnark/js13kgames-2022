@@ -1,0 +1,1 @@
+These files contain drafts I made when I first had the idea for this game years ago. (It was called “Red and Yellow” at that time.) No code from these drafts made it into the final version, just some ideas. But I didn’t want to throw away these old files, so here they are.

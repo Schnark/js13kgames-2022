@@ -4,4 +4,6 @@ When you play together with another player, each of you controls one figure. Whe
 
 To move use the arrow keys or WASD/ZQSD. On a mobile device you swipe in the direction you want to move (anywhere, just the direction counts).
 
-Coil subscribers get access to four more levels.
+You can toggle between music (Їхав козак за Дунай) and sounds, sounds only, and muted via the icon or by pressing m.
+
+Coil subscribers (and other players when they play together with Coil subscribers) get access to four more levels.

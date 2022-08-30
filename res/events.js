@@ -57,6 +57,9 @@ function onKeydown (e) {
 		break;
 	case 'r':
 		connection.msg('restart');
+		break;
+	case 'm':
+		document.getElementById('audio').click();
 	}
 	e.preventDefault();
 }

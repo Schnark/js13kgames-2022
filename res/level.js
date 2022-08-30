@@ -1,5 +1,5 @@
 /*global Level: true*/
-/*global GRID_WIDTH, GRID_HEIGHT, Room, events, draw, overlay*/
+/*global GRID_WIDTH, GRID_HEIGHT, Room, events, audio, draw, overlay*/
 
 Level =
 (function () {
@@ -88,6 +88,9 @@ Level.prototype.move = function (user, dx, dy) {
 		return;
 	}
 	moved = this.movePlayer(user === 0 ? this.yellow : this.blue, dx, dy);
+	if (moved) {
+		audio.sound('move');
+	}
 	this.state = this.checkEnd();
 	if (moved && this.state <= 1) {
 		this.movePlayer(this.death, this.inverseMove ? -dx : dx, this.inverseMove ? -dy : dy); //TODO more moving strategies?
@@ -106,12 +109,14 @@ Level.prototype.enterLeave = function (player, enterLeave) {
 	} else if (tile.type === 'trigger') {
 		tile = tile.data;
 		this.rooms[tile[2]].getTile(tile[0], tile[1]).state = enterLeave ? 1 : 0;
+		audio.sound(enterLeave ? 'open' : 'close');
 	} else if (tile.type === 'teleport') {
 		if (enterLeave) {
 			tile = tile.data;
 			if (!this.rooms[tile[2]].isOccupied(tile[0], tile[1])) {
 				this.rooms[tile[2]].addMovable(player);
 				player.moveTo(tile[0], tile[1], true);
+				audio.sound('teleport');
 			}
 		}
 	}

@@ -9,7 +9,7 @@ var animationDurations = {
 		teleport: 15 * 1000
 	},
 	drawFunctions = {},
-	stateSpeed = 1 / 1000;
+	stateSpeed = 1 / 900;
 
 drawFunctions.grass = function (ctx) {
 	ctx.fillStyle = '#060';

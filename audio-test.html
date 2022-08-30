@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>Audio Test</title>
+<meta name="viewport" content="width=device-width">
+<script src="res/audio.js"></script>
+<script>setInterval(audio.tick, 20)</script>
+</head><body>
+<p><button onclick="audio.start()">Start music</button></p>
+<p><button onclick="audio.stop()">Stop music</button></p>
+<p><button onclick="audio.sound('move')">Sound: move</button></p>
+<p><button onclick="audio.sound('win')">Sound: win</button></p>
+<p><button onclick="audio.sound('open')">Sound: open</button></p>
+<p><button onclick="audio.sound('close')">Sound: close</button></p>
+<p><button onclick="audio.sound('switch')">Sound: switch</button></p>
+<p><button onclick="audio.sound('teleport')">Sound: teleport</button></p>
+<p><button onclick="audio.sound('die')">Sound: die</button></p>
+</body></html>

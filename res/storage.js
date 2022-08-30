@@ -3,13 +3,13 @@ storage =
 (function () {
 "use strict";
 
-//TODO sessionStorage -> localStorage
 var data = {
-	solved: {}
+	solved: {},
+	audio: 2
 }, storageKey = 'schnark-js13k-2022';
 
 try {
-	data = JSON.parse(sessionStorage.getItem(storageKey) || 'x');
+	data = JSON.parse(localStorage.getItem(storageKey) || 'x');
 } catch (e) {
 }
 
@@ -20,7 +20,7 @@ function get (key) {
 function set (key, value) {
 	data[key] = value;
 	try {
-		sessionStorage.setItem(storageKey, JSON.stringify(data));
+		localStorage.setItem(storageKey, JSON.stringify(data));
 	} catch (e) {
 	}
 }
