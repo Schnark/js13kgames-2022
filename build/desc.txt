@@ -7,3 +7,9 @@ To move use the arrow keys or WASD/ZQSD. On a mobile device you swipe in the dir
 You can toggle between music (Їхав козак за Дунай) and sounds, sounds only, and muted via the icon or by pressing m.
 
 Coil subscribers (and other players when they play together with Coil subscribers) get access to four more levels.
+
+Both modes provide their own challenges, when you play together with another player, you have to coordinate your moves with that of the other player. When you play alone, you have to switch your attention between the two figures.
+
+Your times to solve the levels are stored, so you can always try to solve them faster than before.
+
+Should the version on Heroku in the future no longer work, there is still the variant on Github at https://schnark.github.io/js13kgames-2022/public/, though this only allows playing alone, not with other players.

@@ -60,8 +60,8 @@ function onConnection (type, user, details) {
 			levelManager.end();
 			startPage.hidden = false;
 		} else {
-			overlay.modal('The other user quit. You can continue to play alone.', function () {});
 			connection = new LocalConnection(onConnection, connection.getUser());
+			overlay.modal('The other user quit. You can continue to play alone.', function () {});
 			events.start(connection);
 		}
 		break;
