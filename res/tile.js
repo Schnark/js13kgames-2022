@@ -21,8 +21,8 @@ drawFunctions.grass = function (ctx) {
 drawFunctions.block = function (ctx) {
 	ctx.fillStyle = '#310';
 	ctx.fillRect(0, 0, GRID_SIZE, GRID_SIZE);
-	//ctx.lineWidth = 2;
-	ctx.strokeStyle = '#ffc';
+	ctx.lineWidth = 2.5;
+	ctx.strokeStyle = '#dda';
 	ctx.beginPath();
 	ctx.moveTo(0, 0);
 	ctx.lineTo(GRID_SIZE, 0);

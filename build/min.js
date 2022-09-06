@@ -1,44 +1,3 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8">
-<title>Yellow and Blue</title>
-<meta name="viewport" content="width=device-width">
-<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAxElEQVRYhe3VQQrEIAwF0CwKc405ZHfCLy69cZlF/6wsHbVFIamDtPA32eQZUhXxE7vmbwCOL66U6jgvuoCW5mMDABBA1jCtmwCcF5IsImL9Q9hOIH4lwLE+7g48gAfQDeC8NEcV0C1DAt5YstwGAMAws5giRLP5WeNLhObYawBhpj4gNo/POPnbMNbDVpiC6um3/dXOTp3WbQCHE6eAfQp3AJr2oAdAfQfE1/2CpoDaKZjdAzUI85vwDHL5HlgAmtIb8AXLuaOmyFjUxgAAAABJRU5ErkJggg==">
-<meta name="monetization" content="$ilp.uphold.com/k4eJGQUDF9nw">
-<script src="/socket.io/socket.io.js"></script>
-<style>
-html,body{margin:0;padding:0;font-family:sans-serif;height:100%}section:not(#game){padding:0.5em 1em}header{background:#000;margin:auto;position:relative;z-index:1;text-align:center}header button{background:none;border:0;color:#fff;padding:0.5em;height:42px}.left{float:left}.right{float:right}.yellow #blue,.blue #yellow{display:none}.a0 #a1,.a0 #a2,.a1 #a0,.a1 #a2,.a2 #a0,.a2 #a1{display:none}#game{background:linear-gradient(90deg,#aac,#dd9);height:100%}#canvas{display:block;margin:auto;box-shadow:2em 2em #000,-2em -3em #000,2em -3em #000,-2em 2em #000;image-rendering:-moz-crisp-edges;image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges}#start{text-align:center}#start button{background:#fff;color:#000;border:solid thin;font:inherit;padding:1em;width:16em;max-width:100%;transition:width 0.2s;cursor:pointer}#start button:hover{transition:width 0.5s;width:20em}#levels button{background:#fff;color:#000;border:solid;font:inherit;font-size:150%;font-weight:bold;width:3em;height:3em;margin:0.5em;cursor:pointer}#levels button .result{font-weight:normal;font-size:67%}#levels button:enabled:hover{border-color:#00f}#levels button:disabled{color:#888;cursor:default}#levels button.solved{background:#060;border-color:#060;color:#fff}#levels button.solved:disabled{border-color:#888}#info{display:none;position:fixed;z-index:2;top:0;left:0;right:0;background-color:rgba(255,255,255,0.8);text-align:center}#modal{display:none;position:fixed;z-index:2;top:0;bottom:0;left:0;right:0;background-color:rgba(255,255,255,0.7);text-align:center;font-size:400%;overflow:auto}#modal p{padding:0 1em}</style>
-</head><body>
-<section id="start">
-<h1><span style="color:#bb0">Yellow</span> and <span style="color:#00f">Blue</span></h1>
-<p><button id="alone">Play alone</button></p>
-<p><button id="friend">Play with a friend</button></p>
-<p><button id="random">Play with a random person</button></p>
-</section>
-<section id="code" hidden>
-<p>Think of any word or other code and tell it your friend. Then you both enter that code to play together.</p>
-<p><label>Code: <input id="input"></label></p>
-<p><button id="connect">Connect</button></p>
-<p><button id="back">Cancel</button></p>
-</section>
-<section id="wait" hidden>
-<p>Waiting for other player …</p>
-<p><button id="cancel">Cancel</button></p>
-</section>
-<section id="levels" hidden>
-</section>
-<section id="game" hidden>
-<header id="header"><button id="abort" class="left" title="Abort level"><svg height="24px" width="24px" viewBox="0 0 24 24" fill="currentcolor"><path d="M18.3,5.71L18.3,5.71c-0.39-0.39-1.02-0.39-1.41,0L12,10.59L7.11,5.7c-0.39-0.39-1.02-0.39-1.41,0l0,0c-0.39,0.39-0.39,1.02,0,1.41L10.59,12L5.7,16.89c-0.39,0.39-0.39,1.02,0,1.41h0c0.39,0.39,1.02,0.39,1.41,0L12,13.41l4.89,4.89 c0.39,0.39,1.02,0.39,1.41,0l0,0c0.39-0.39,0.39-1.02,0-1.41L13.41,12l4.89-4.89C18.68,6.73,18.68,6.09,18.3,5.71z"/></svg></button> <button id="switch"><svg id="yellow" height="24px" width="24px" viewBox="0 0 24 24" fill="#ff0"><path d="M2 2H20V20H2V2"/></svg><svg id="blue" height="24px" width="24px" viewBox="0 0 24 24" fill="#58f"><circle r="10" cx="12" cy="12"/></svg></button> <button id="restart" class="right" title="Restart level [r]"><svg height="24px" width="24px" viewBox="0 0 24 24" fill="currentcolor"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button><button id="audio" class="right"><svg id="a0" title="Muted [m]" height="24px" width="24px" viewBox="0 0 24 24" fill="currentcolor"><path d="M17 12.61V10h2c1.1 0 2-.9 2-2s-.9-2-2-2h-2c-1.1 0-2 .9-2 2v3.61l2 2zM8.12 6.56a.996.996 0 1 0-1.41 1.41l8.29 8.3v.28c-.94-.54-2.1-.75-3.33-.32-1.34.48-2.37 1.67-2.61 3.07a4.007 4.007 0 0 0 4.59 4.65c1.96-.31 3.35-2.11 3.35-4.1v-1.58l5.02 5.02a.996.996 0 1 0 1.41-1.41L8.12 6.56z"/></svg><svg id="a1" title="Sounds only [m]" height="24" width="24" viewBox="0 0 24 24" fill="currentcolor"><path d="M3 10v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71V6.41c0-.89-1.08-1.34-1.71-.71L7 9H4c-.55 0-1 .45-1 1zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 4.45v.2c0 .38.25.71.6.85C17.18 6.53 19 9.06 19 12s-1.82 5.47-4.4 6.5c-.36.14-.6.47-.6.85v.2c0 .63.63 1.07 1.21.85C18.6 19.11 21 15.84 21 12s-2.4-7.11-5.79-8.4c-.58-.23-1.21.22-1.21.85z"/></svg><svg id="a2" title="Sounds and music [m]" height="24px" width="24px" viewBox="0 0 24 24" fill="currentcolor"><path d="M15 8v8.55c-.94-.54-2.1-.75-3.33-.32-1.34.48-2.37 1.67-2.61 3.07a4.007 4.007 0 0 0 4.59 4.65c1.96-.31 3.35-2.11 3.35-4.1V10h2c1.1 0 2-.9 2-2s-.9-2-2-2h-2c-1.1 0-2 .9-2 2z"/></svg></button></header>
-<canvas id="canvas" moz-opaque></canvas>
-</section>
-<div id="info">
-<p id="info-text"></p>
-</div>
-<div id="modal">
-<p id="modal-text"></p>
-<p><button id="modal-close">OK</button></p>
-</div>
-<script>
 (function(){var w,u,s,q,r,o,t,y,z,A,x,p,n;w=function(){function f(e,d){this.isOpen=!1;this.socket=io({upgrade:!1,transports:["websocket"]});this.socket.on("start",function(c){c=JSON.parse(c);this.user=c.user;this.isOpen=!0;e("start",c.user,c.details)}.bind(this));this.socket.on("data",function(c){c=JSON.parse(c);e(c.type,c.user,c.details)});this.socket.on("end",function(c){this.isOpen=!1;e("end",c,{});this.socket.disconnect()}.bind(this));this.socket.on("disconnect",function(){this.isOpen&&e("end",
 this.user,{});this.isOpen=!1}.bind(this));this.socket.on("connect",function(){this.socket.emit("start",d||"")}.bind(this))}f.isAvailable=function(){return typeof io!=="undefined"};f.prototype.switchUser=function(){};f.prototype.getUser=function(){return this.user};f.prototype.msg=function(e,d){this.user!==void 0&&this.socket.emit("data",JSON.stringify({type:e,user:this.user,details:d}))};f.prototype.close=function(){this.socket.disconnect(!0)};return f}();u=function(){function f(e,d){this.user=d||
 0;this.callback=e;d===void 0&&setTimeout(function(){e("start",0,{seed:Math.floor(Math.random()*4294967296)})},0)}f.prototype.getUser=function(){return this.user};f.prototype.switchUser=function(e){if(this.user!==e)this.user=e,this.callback("switch-user",this.user,{})};f.prototype.msg=function(e,d){this.callback(e,this.user,d)};f.prototype.close=function(){this.callback("end",this.user,{})};return f}();s=function(){var f={solved:{},audio:2};try{f=JSON.parse(localStorage.getItem("schnark-js13k-2022")||
@@ -101,5 +60,3 @@ i),n.markSolved(b,g),c.msg("unlock",{data:Object.keys(i).length});q.info("");q.m
 !g.getState()&&(e!==c.getUser()&&q.info("Level aborted by other user"),n.abortLevel());break;case "unlock":h.data==="bonus"&&q.info(f()?"Bonus levels unlocked. Thank you for your support!":"Bonus levels unlocked by other user"),n.unlock(h.data)}}var c,a=document.getElementById("start"),b=document.getElementById("code"),l=document.getElementById("wait"),j=document.getElementById("switch"),g=document.getElementById("audio"),i=s.get("solved"),h=s.get("audio"),k="Yellow died!,Blue died!,Yellow burnt!,Blue burnt!,Yellow was crushed in a closing door!,Blue was crushed in a closing door!,Yellow got stuck in a teleporter!,Blue got stuck in a teleporter!".split(",");
 (function(){h++;e();g.addEventListener("click",e);document.getElementById("alone").addEventListener("click",function(){c=new u(d)});document.getElementById("friend").addEventListener("click",function(){a.hidden=!0;b.hidden=!1});document.getElementById("random").addEventListener("click",function(){a.hidden=!0;l.hidden=!1;c=new w(d)});document.getElementById("connect").addEventListener("click",function(){b.hidden=!0;l.hidden=!1;c=new w(d,document.getElementById("input").value)});document.getElementById("back").addEventListener("click",
 function(){b.hidden=!0;a.hidden=!1});document.getElementById("cancel").addEventListener("click",function(){c.close();l.hidden=!0;a.hidden=!1});w.isAvailable()||(c=new u(d))})()})()})();
-</script>
-</body></html>

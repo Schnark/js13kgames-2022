@@ -134,8 +134,12 @@ function onConnection (type, user, details) {
 		}
 		break;
 	case 'unlock':
-		if (details.data === 'bonus' && !supportsMonetization()) {
-			overlay.info('Bonus levels unlocked by other user');
+		if (details.data === 'bonus') {
+			overlay.info(
+				supportsMonetization() ?
+					'Bonus levels unlocked. Thank you for your support!' :
+					'Bonus levels unlocked by other user'
+			);
 		}
 		levelManager.unlock(details.data);
 	}

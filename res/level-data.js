@@ -4,7 +4,9 @@ levelData =
 "use strict";
 
 return [
-	{title: 'Tutorial levels', desc: 'Play these tutorial levels first.', lock: 0, levels: [{
+	{title: 'Tutorial levels',
+		desc: 'Play these tutorial levels first. They will introduce you to the different elements of the game.',
+		lock: 0, levels: [{
 		map:
 			'   #      ' +
 			' 0!       ' +
@@ -203,7 +205,7 @@ return [
 			[9, 14, 2]
 		]
 	}]},
-	{title: 'More levels', desc: 'Solve all the tutorial levels to unlock.', lock: 7, levels: [{
+	{title: 'More levels', desc: 'Solve at least six of the tutorial levels to unlock.', lock: 6, levels: [{
 		map:
 			'0         ' +
 			'          ' +
