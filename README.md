@@ -1,7 +1,7 @@
 This repository hosts my submission for https://js13kgames.com/.
 
 There are several versions of the game:
-* Official version: NOT YET READY (the description page, the game itself is the deployed version below)
+* Official version: https://js13kgames.com/entries/yellow-and-blue (the description page, the game itself is the deployed version below)
 * Development version: https://schnark.github.io/js13kgames-2022/
 * Debug version for 2 players: https://schnark.github.io/js13kgames-2022/iframe-debug.html
 * Minified version: https://schnark.github.io/js13kgames-2022/public/
