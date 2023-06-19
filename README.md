@@ -5,7 +5,7 @@ There are several versions of the game:
 * Development version: https://schnark.github.io/js13kgames-2022/
 * Debug version for 2 players: https://schnark.github.io/js13kgames-2022/iframe-debug.html
 * Minified version: https://schnark.github.io/js13kgames-2022/public/
-* Deployed version: https://yellow-and-blue.herokuapp.com/
+* Deployed version: ~~https://yellow-and-blue.herokuapp.com/~~ https://yellow-and-blue.onrender.com/
 
 Note that the versions deployed on schnark.github.io only allow for games in single player mode. For two players the game must be run in the correct server environment, e.g. deployed on herokuapp.com. The debug version simulates the server, using two iframes on one page (not a very acurate test, but still useful for a quick look).
 
